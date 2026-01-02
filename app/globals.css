@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Source Sans 3', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #0A0A0A;
+  color: #F5F0E6;
+  min-height: 100vh;
+}
+
+/* Film grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Neon text effect */
+.neon-text {
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 40px currentColor;
+}
+
+.neon-text-subtle {
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor;
+}
+
+/* Beer fill animation */
+.beer-fill {
+  background: linear-gradient(to top, #F4A020 var(--fill-percent, 0%), transparent var(--fill-percent, 0%));
+  transition: --fill-percent 0.5s ease-out;
+}
+
+@property --fill-percent {
+  syntax: '<percentage>';
+  initial-value: 0%;
+  inherits: false;
+}
+
+/* Beer glass component */
+.beer-glass {
+  position: relative;
+  width: 40px;
+  height: 50px;
+  border: 3px solid #F4A020;
+  border-radius: 0 0 8px 8px;
+  border-top: none;
+  overflow: hidden;
+}
+
+.beer-glass::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -3px;
+  right: -3px;
+  height: 8px;
+  background: transparent;
+  border: 3px solid #F4A020;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+
+.beer-glass-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, #D4820E, #F4A020);
+  transition: height 0.4s ease-out;
+}
+
+.beer-glass-foam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: #FFF8E7;
+  border-radius: 4px 4px 0 0;
+  transform: translateY(-4px);
+}
+
+/* Rating badge */
+.rating-badge {
+  @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium;
+  background: rgba(244, 160, 32, 0.15);
+  border: 1px solid rgba(244, 160, 32, 0.3);
+  color: #F4A020;
+}
+
+/* Card hover effects */
+.movie-card {
+  @apply relative overflow-hidden rounded-lg transition-all duration-300;
+  background: linear-gradient(145deg, #1E1E1E 0%, #141414 100%);
+  border: 1px solid #2A2A2A;
+}
+
+.movie-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(244, 160, 32, 0.3);
+  box-shadow: 
+    0 10px 40px -10px rgba(244, 160, 32, 0.2),
+    0 0 20px -5px rgba(244, 160, 32, 0.1);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #141414;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2A2A;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3A3A3A;
+}
+
+/* Focus states */
+input:focus, button:focus, a:focus {
+  outline: 2px solid #F4A020;
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: rgba(244, 160, 32, 0.3);
+  color: #F5F0E6;
+}
+
+/* Admin form styles */
+.admin-input {
+  @apply w-full px-4 py-3 bg-bar-dark border border-smoke rounded-lg text-cream placeholder-smoke transition-colors;
+}
+
+.admin-input:focus {
+  @apply border-beer-gold bg-bar-gray;
+}
+
+.admin-button {
+  @apply px-6 py-3 bg-beer-gold text-bar-black font-semibold rounded-lg transition-all duration-200;
+}
+
+.admin-button:hover {
+  @apply bg-beer-amber;
+  box-shadow: 0 0 20px rgba(244, 160, 32, 0.3);
+}
+
+.admin-button:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Page transitions */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
