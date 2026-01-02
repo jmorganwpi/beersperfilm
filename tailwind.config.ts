@@ -18,7 +18,7 @@ const config: Config = {
         'bar-black': '#0A0A0A',
         'bar-dark': '#141414',
         'bar-gray': '#1E1E1E',
-        'smoke': '#2A2A2A',
+        'smoke': '#8B8B8B',
         'cream': '#F5F0E6',
       },
       fontFamily: {
