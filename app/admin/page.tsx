@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Header from '@/components/Header'
@@ -8,6 +8,18 @@ import { RatedMovie, TAG_LABELS, MovieTag } from '@/lib/types'
 import Image from 'next/image'
 
 export default function AdminPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-beer-gold animate-pulse">Loading...</div>
+      </div>
+    }>
+      <AdminContent />
+    </Suspense>
+  )
+}
+
+function AdminContent() {
   const supabase = createClient()
   const router = useRouter()
   const searchParams = useSearchParams()

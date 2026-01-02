@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Header from '@/components/Header'
 import SearchBar from '@/components/SearchBar'
@@ -23,6 +23,26 @@ interface SearchResult {
 }
 
 export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen">
+        <Header />
+        <main className="pt-24 pb-20 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h1 className="font-display text-4xl text-cream mb-6">FIND YOUR FILM</h1>
+              <div className="text-beer-gold animate-pulse">Loading...</div>
+            </div>
+          </div>
+        </main>
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
+  )
+}
+
+function SearchContent() {
   const searchParams = useSearchParams()
   const query = searchParams.get('q') || ''
   
