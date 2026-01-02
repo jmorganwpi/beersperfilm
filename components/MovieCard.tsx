@@ -32,7 +32,7 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-bar-black via-transparent to-transparent" />
         
         {/* Beer badge overlay */}
-        <div className="absolute top-3 right-3">
+        <div className="absolute bottom-3 left-3">
           <BeerBadge confusion={movie.confusion_beers} enhancement={movie.enhancement_beers} />
         </div>
         
