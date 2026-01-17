@@ -1,46 +1,70 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getMoviesByImdbIds } from '@/lib/omdb'
 import { BeerRating } from '@/lib/types'
+
+interface MovieCache {
+  imdb_id: string
+  title: string | null
+  year: string | null
+  poster: string | null
+  plot: string | null
+  director: string | null
+  actors: string | null
+  genre: string | null
+  runtime: string | null
+  imdb_rating: string | null
+  rated: string | null
+}
 
 export async function GET(request: NextRequest) {
   const supabase = createClient()
-  
-  const { data: ratings, error } = await supabase
-    .from('beer_ratings')
-    .select('*')
-    .order('created_at', { ascending: false })
-  
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Fetch ratings and cached movie data in parallel
+  const [ratingsResult, cacheResult] = await Promise.all([
+    supabase
+      .from('beer_ratings')
+      .select('*')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('movie_cache')
+      .select('*')
+  ])
+
+  if (ratingsResult.error) {
+    return NextResponse.json({ error: ratingsResult.error.message }, { status: 500 })
   }
-  
+
+  const ratings = ratingsResult.data
   if (!ratings || ratings.length === 0) {
     return NextResponse.json([])
   }
-  
-  // Fetch OMDB data for all movies
-  const imdbIds = ratings.map((r: BeerRating) => r.imdb_id)
-  const omdbData = await getMoviesByImdbIds(imdbIds)
-  
+
+  // Create a map of cached movie data
+  const cacheMap = new Map<string, MovieCache>()
+  if (cacheResult.data) {
+    cacheResult.data.forEach((movie: MovieCache) => {
+      cacheMap.set(movie.imdb_id, movie)
+    })
+  }
+
   // Combine data
   const movies = ratings.map((rating: BeerRating) => {
-    const omdb = omdbData.get(rating.imdb_id)
+    const cached = cacheMap.get(rating.imdb_id)
     return {
       ...rating,
-      title: omdb?.Title,
-      year: omdb?.Year,
-      poster: omdb?.Poster,
-      plot: omdb?.Plot,
-      director: omdb?.Director,
-      actors: omdb?.Actors,
-      genre: omdb?.Genre,
-      runtime: omdb?.Runtime,
-      imdbRating: omdb?.imdbRating,
-      rated: omdb?.Rated,
+      title: cached?.title || `Movie ${rating.imdb_id}`,
+      year: cached?.year,
+      poster: cached?.poster,
+      plot: cached?.plot,
+      director: cached?.director,
+      actors: cached?.actors,
+      genre: cached?.genre,
+      runtime: cached?.runtime,
+      imdbRating: cached?.imdb_rating,
+      rated: cached?.rated,
     }
   })
-  
+
   return NextResponse.json(movies)
 }
 
